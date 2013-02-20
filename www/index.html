@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/CustomAV.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
+        <title>Awesome App</title>
+
+		<style type="text/css" media="screen">
+			.cancel {float:left;}
+			.create, .save, .update {float:right;}
+			.update {margin-right:2px;}
+			.add {right:3px;}
+			textarea {height:110px !important}
+		</style>
+    </head>
+    <body>
+		
+		<div data-role="page" id="home">
+			<div data-role="header">
+				<h1></h1>
+				<a href="#add_note" data-role="button" data-icon="plus" data-mini="true" class="add">Add</a>
+			</div><!-- /header -->
+			<div data-role="content">
+				
+				<ul data-role="listview" id="list"></ul>
+				
+			</div>
+		</div><!-- /page -->
+		
+		<div data-role="page" id="add_note">
+			<div data-role="header">
+				<h1>Add a note</h1>
+			</div><!-- /header -->
+			
+			<div data-role="content">
+				<p><label for="new_name">Name</label><input type="text" name="new_name" value="" id="new_name"></p>
+				<p><label for="new_notes">Notes</label><textarea name="new_notes" id="new_notes" rows="16" cols="40"></textarea></p>
+				
+				<a href="#home" data-role="button" data-icon="arrow-l" data-mini="true" data-theme="a" class="cancel">Cancel</a>
+				<a href="#home" data-role="button" data-icon="plus" data-mini="true" data-theme="b" class="create">Save</a>		
+			</div><!-- /content -->
+		</div><!-- /page -->
+		
+		<div data-role="page" id="edit_note">
+			<div data-role="header">
+				<h1>Edit a note</h1>
+			</div><!-- /header -->
+			
+			<div data-role="content">
+				<input type="hidden" name="edit_id" value="" id="edit_id">
+				<p><label for="edit_name">Name</label><input type="text" name="edit_name" value="" id="edit_name"></p>
+				<p><label for="edit_notes">Notes</label><textarea name="edit_notes" id="edit_notes" rows="16" cols="40"></textarea></p>
+				
+				<a href="#home" data-role="button" data-icon="arrow-l" data-mini="true" data-theme="a" class="cancel">Cancel</a>
+				<a href="#home" data-role="button" data-icon="arrow-r" data-mini="true" data-theme="b" class="update">Save</a>
+				<br clear="all" />
+				<a href="#home" data-role="button" data-icon="minus" data-mini="true" data-theme="e" class="delete">Delete</a>	
+			</div><!-- /content -->
+		</div><!-- /page -->
+		
+		
+		
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            // app.initialize();
+			var the_id, the_name, the_notes,
+				$list = $('ul#list');
+			
+			// Wait for PhoneGap to load
+			//
+			document.addEventListener("deviceready", onDeviceReady, false);
+			
+			// Initial Query of the database
+			//
+			function homeQuery(tx){
+			    tx.executeSql('SELECT * FROM DEMO', [], function(tx, results){
+			        var len = results.rows.length;
+					
+			        for (var i=0; i<len; i++){
+						var item = results.rows.item(i);
+			            console.log("Row = " + i + " ID = " + item.id + " Name =  " + item.the_name + " Notes =  " + item.the_notes);
+						
+						addToList( item.id, item.the_name, item.the_notes );
+			        }
+				});
+			}
+			
+			
+			// Populate
+			// 
+			function populateDB(tx){
+		        // tx.executeSql('DROP TABLE IF EXISTS DEMO'); 
+			     tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id INTEGER PRIMARY KEY, the_name, the_notes)');
+			     tx.executeSql('INSERT INTO DEMO (the_name, the_notes) VALUES ("' + the_name + '", "' + the_notes + '")', [], populateSuccessCB, errorCB);
+			}
+			function populateSuccessCB(tx, results) {
+				addToList( results.insertId, the_name, the_notes );
+			}
+			
+			
+			// Update
+			// 
+			function updateDB(tx){
+				tx.executeSql("UPDATE DEMO SET the_name ='" +the_name+"' WHERE id = "+ the_id +"", [],   updateSuccessCB, errorCB);
+			}
+			function updateSuccessCB(){
+				$list.find('.id-'+the_id).html(the_name).data('notes', the_notes);
+			}
+			
+			
+			// Clearout
+			// 
+			function deleteDB(tx){
+			     tx.executeSql('DELETE FROM DEMO WHERE id="' + the_id +'"', [],   deleteSuccessCB, errorCB);
+			}
+			function deleteSuccessCB(){
+				$list.find('.id-'+the_id).parents('li').first().remove();
+			}
+			
+			
+			// Error
+			// 
+			function errorCB(err) {
+			    console.log("Error processing SQL: "+err.code);
+			}
+			
+			
+			function successCB(tx) {
+				// $list.append('<li><a href="#note_' + results.insertId + '">' + the_name + '</a></li>');
+			}
+			
+			
+			
+			function addToList( temp_id, temp_name, temp_notes ){
+				$list.append('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ui-li-last"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="#edit_note" data-id="' + temp_id + '" data-notes="' + temp_notes + '" class="edit_link ui-link-inherit id-'+temp_id+'">' + temp_name + '</a></div><span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></div></li>');
+			}
+			
+			
+			function updateList( temp_id, temp_name, temp_notes ){
+				$list.find('data-id=["' + temp_id + '"]').html(temp_name).data('notes', temp_notes);
+			}
+			
+			
+			// PhoneGap is ready
+			//
+			function onDeviceReady() {
+			console.log($('#home').html());
+			    var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
+			    db.transaction( homeQuery );
+				
+				$('.create').on('click',function(){
+					the_name = $('input[name="new_name"]').val();
+					the_notes = $('textarea[name="new_notes"]').val();
+					
+				    db.transaction( populateDB, errorCB, successCB );
+				});
+				
+				$('.update').on('click',function(){
+					the_id = $('input[name="edit_id"]').val();
+					the_name = $('input[name="edit_name"]').val();
+					the_notes = $('textarea[name="edit_notes"]').val();
+					
+					console.log('click set...');
+					console.log('id = ' + the_id + ' | name = ' + the_name + ' | notes = ' + the_notes);
+				    db.transaction( updateDB, errorCB, successCB );
+				});
+				
+				$('.delete').on('click',function(){
+					the_id = $('input[name="edit_id"]').val();
+				    db.transaction( deleteDB, errorCB, successCB );
+				});
+				
+				$(document).on("click", "a.edit_link", function(){
+					$('#edit_note #edit_id').val($(this).data('id'));
+					$('#edit_note input#edit_name').val($(this).text());
+					$('#edit_note textarea').val($(this).data('notes'));
+				}); 
+			}
+        </script>
+    </body>
+</html>
