@@ -102,7 +102,7 @@
 					
 			        for (var i=0; i<len; i++){
 						var item = results.rows.item(i);
-			            console.log("Row = " + i + " ID = " + item.id + " Name =  " + item.the_name + " Notes =  " + item.the_notes);
+			            // console.log("Row = " + i + " ID = " + item.id + " Name =  " + item.the_name + " Notes =  " + item.the_notes);
 						
 						addToList( item.id, item.the_name, item.the_notes );
 			        }
@@ -157,6 +157,8 @@
 			
 			function addToList( temp_id, temp_name, temp_notes ){
 				$list.append('<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="arrow-r" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-up-c ui-btn-icon-right ui-li-has-arrow ui-li ui-li-last"><div class="ui-btn-inner ui-li"><div class="ui-btn-text"><a href="#edit_note" data-id="' + temp_id + '" data-notes="' + temp_notes + '" class="edit_link ui-link-inherit id-'+temp_id+'">' + temp_name + '</a></div><span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></div></li>');
+				$('input[name="new_name"]').val('');
+				$('textarea[name="new_notes"]').val('');
 			}
 			
 			
@@ -168,7 +170,7 @@
 			// PhoneGap is ready
 			//
 			function onDeviceReady() {
-			console.log($('#home').html());
+				// console.log($('#home').html());
 			    var db = window.openDatabase("Database", "1.0", "PhoneGap Demo", 200000);
 			    db.transaction( homeQuery );
 				
