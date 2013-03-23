@@ -22,10 +22,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/CustomAV.css" />
-        <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/application.css" />
         <title>Awesome App</title>
-
+		
 		<style type="text/css" media="screen">
 			.cancel {float:left;}
 			.create, .save, .update {float:right;}
@@ -34,54 +34,98 @@
 			textarea {height:110px !important}
 		</style>
     </head>
-    <body>
+    <body class="home">
 		
-		<div data-role="page" id="home">
-			<div data-role="header">
-				<h1></h1>
-				<a href="#add_note" data-role="button" data-icon="plus" data-mini="true" class="add">Add</a>
-			</div><!-- /header -->
-			<div data-role="content">
-				<div id="app-status-div">
-					<ul id="app-status-ul">
-						<li>Cordova PushNotification Plugin Demo</li>
-					</ul>
+		<style type="text/css" media="screen">
+			body.home {
+				background-image:url(img/background.jpg);
+				background-attachment:fixed;
+				background-position:center center;
+				background-repeat:no-repeat;
+				background-size:cover;
+			}
+		</style>
+
+		<div data-role="page" id="login" class="ui-page-active">
+			<table class="first"><tr><td valign="middle">
+				<div class="container">
+					<a href="/" class="logo" title="Audtonic">
+						<img src="img/audtonic-logo-home.png" width="228" height="168" alt="Audtonic : Music :: Tonic Water : Gin" class="replace2x" />
+					</a>
+				</div>
+			</td></tr></table>
+	
+	
+			<table class="second"><tr><td valign="middle">
+				<div class="mini_nav">
+					<div class="container">
+						<span class="sign">Sign:</span>
+						<div class="buttons">
+							<a href="/" class="button">UP</a>
+							<a href="/" class="button active">IN</a>
+						</div>
+					</div>
 				</div>
 				
-				<ul data-role="listview" id="list"></ul>
-				
+				<div class='container bottomContent'>	
+					<form class="form-vertical focusmagic" name="loginform" id="loginform" method="POST" action="#" accept-charset="UTF-8" data-controller="APILogin">
+						<div class="error"></div>
+						<div class="col">
+							<label for="user_login">Username</label>
+							<input type="text" name="log" id="user_login" class="input" value="" size="20">
+						</div>
+						<div class="col">
+							<label for="user_pass">Password</label>
+							<input type="password" name="pwd" id="user_pass" class="input" value="" size="20">
+						</div>
+						<div class="col">
+							<input type="submit" name="submit" id="wp-submit" class="wp-submit" value="Sign In">
+						</div>
+					</form>
+				</div>
+			</td></tr></table>
+		</div><!-- /page -->
+		
+		
+		<div data-role="page" id="manage">
+			<div class="container topcontainer">
+				<div class="nav">Hey <a href="">admin</a>. <a href="">Logout</a></div>
 			</div>
-		</div><!-- /page -->
+			<div class="container mainbg">
+				<div class="span-24 last">
+					<header>
+						<a href="/manage/" class="logo"><img src="img/audtonic-logo.png" width="224" height="31" alt="Audtonic Logo" class="replace2x"></a>
+						<div class="nav">
+							<a href="/manage/" class="active">Manage</a>
+							<a href="/add-artist/" class="">Add Artist</a>
+							<a href="/releases/" class="">Releases</a>
+						</div>
+						<br class="clear" />
+					</header>
+					
+					<div class="message">
+						<p>It’s a fairly simple concept.  You subscribe to artists and we send  
+						you an emails when they come out with a new album.</p>
 		
-		<div data-role="page" id="add_note">
-			<div data-role="header">
-				<h1>Add a note</h1>
-			</div><!-- /header -->
-			
-			<div data-role="content">
-				<p><label for="new_name">Name</label><input type="text" name="new_name" value="" id="new_name"></p>
-				<p><label for="new_notes">Notes</label><textarea name="new_notes" id="new_notes" rows="16" cols="40"></textarea></p>
-				
-				<a href="#home" data-role="button" data-icon="arrow-l" data-mini="true" data-theme="a" class="cancel">Cancel</a>
-				<a href="#home" data-role="button" data-icon="plus" data-mini="true" data-theme="b" class="create">Save</a>		
-			</div><!-- /content -->
-		</div><!-- /page -->
+						<p>Here are some below but if you can’t find
+						an artist, fret not... you can <a href="/add-artist/">add them</a>.</p>
+					</div>
+	
+					<form action="" method="post" accept-charset="utf-8">
+						<div class='search'>
+							<label for="search">Search</label><br />
+							<input type="text" name="search" value="" id="search" class="doublewide" data-controller="ArtistSearch">
+						</div>
+						<!-- <div class="other-options">
+							<a href="/last-fm/">Subscribe to Last.fm Favorites</a> &nbsp;| &nbsp;
+							<a href="/unsubscribe/">Unsubscribe from all artists</a>
+						</div> -->
 		
-		<div data-role="page" id="edit_note">
-			<div data-role="header">
-				<h1>Edit a note</h1>
-			</div><!-- /header -->
-			
-			<div data-role="content">
-				<input type="hidden" name="edit_id" value="" id="edit_id">
-				<p><label for="edit_name">Name</label><input type="text" name="edit_name" value="" id="edit_name"></p>
-				<p><label for="edit_notes">Notes</label><textarea name="edit_notes" id="edit_notes" rows="16" cols="40"></textarea></p>
-				
-				<a href="#home" data-role="button" data-icon="arrow-l" data-mini="true" data-theme="a" class="cancel">Cancel</a>
-				<a href="#home" data-role="button" data-icon="arrow-r" data-mini="true" data-theme="b" class="update">Save</a>
-				<br clear="all" />
-				<a href="#home" data-role="button" data-icon="minus" data-mini="true" data-theme="e" class="delete">Delete</a>	
-			</div><!-- /content -->
+						<div id="artists" class="artists"></div>
+					</form>
+				</div>
+			</div>
+			<br clear="both" />
 		</div><!-- /page -->
 		
 		
@@ -89,9 +133,10 @@
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/PushNotification.js"></script>
-        <script type="text/javascript" src="js/jquery.mobile.js"></script>
+        <script type="text/javascript" src="js/jquery.focusmagic.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
+        <script type="text/javascript" src="js/application.js"></script>
+<!--        <script type="text/javascript">
             // app.initialize();
 			var the_id, the_name, the_notes,
 				$list = $('ul#list');
@@ -347,6 +392,6 @@
 					$('#edit_note textarea').val($(this).data('notes'));
 				}); 
 			}
-        </script>
+        </script>-->
     </body>
 </html>
