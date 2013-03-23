@@ -50,7 +50,7 @@ jQuery(function ($) {
 			
 			// Add Artists to list
 			$.ajax({
-		        url: 'http://audtonic.site/api/get-artists/',
+		        url: 'http://audtonic.com/api/get-artists/',
 		        type: 'post',
 		        dataType: 'json',
 		        data: {'user_access_key': $.Audtonic.user_access_key },
@@ -150,7 +150,7 @@ jQuery(function ($) {
 			$('#wp-submit').click(function(e){
 			    e.preventDefault();
 			    $.ajax({
-			        url: 'http://audtonic.site/api/login/',
+			        url: 'http://audtonic.com/api/login/',
 			        type: 'post',
 			        dataType: 'json',
 			        data: $self.serialize(),
